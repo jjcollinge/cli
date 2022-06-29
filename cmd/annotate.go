@@ -64,6 +64,8 @@ var (
 	annotateMaxRequestBodySize      int
 	annotateHTTPStreamRequestBody   bool
 	annotateGracefulShutdownSeconds int
+
+	undefined int
 )
 
 var AnnotateCmd = &cobra.Command{
@@ -227,7 +229,7 @@ func getOptionsFromFlags() kubernetes.AnnotateOptions {
 	if annotateConfig != "" {
 		o = append(o, kubernetes.WithConfig(annotateConfig))
 	}
-	if annotateAppPort != -1 {
+	if annotateAppPort != undefined {
 		o = append(o, kubernetes.WithAppPort(annotateAppPort))
 	}
 	if annotateAppProtocol != "" {
@@ -248,13 +250,13 @@ func getOptionsFromFlags() kubernetes.AnnotateOptions {
 	if annotateLogAsJSON {
 		o = append(o, kubernetes.WithLogAsJSON())
 	}
-	if annotateAppMaxConcurrency != -1 {
+	if annotateAppMaxConcurrency != undefined {
 		o = append(o, kubernetes.WithAppMaxConcurrency(annotateAppMaxConcurrency))
 	}
 	if annotateEnableMetrics {
 		o = append(o, kubernetes.WithMetricsEnabled())
 	}
-	if annotateMetricsPort != -1 {
+	if annotateMetricsPort != undefined {
 		o = append(o, kubernetes.WithMetricsPort(annotateMetricsPort))
 	}
 	if annotateEnableDebug {
@@ -278,28 +280,28 @@ func getOptionsFromFlags() kubernetes.AnnotateOptions {
 	if annotateListenAddresses != "" {
 		o = append(o, kubernetes.WithListenAddresses(annotateListenAddresses))
 	}
-	if annotateLivenessProbeDelay != -1 {
+	if annotateLivenessProbeDelay != undefined {
 		o = append(o, kubernetes.WithLivenessProbeDelay(annotateLivenessProbeDelay))
 	}
-	if annotateLivenessProbeTimeout != -1 {
+	if annotateLivenessProbeTimeout != undefined {
 		o = append(o, kubernetes.WithLivenessProbeTimeout(annotateLivenessProbeTimeout))
 	}
-	if annotateLivenessProbePeriod != -1 {
+	if annotateLivenessProbePeriod != undefined {
 		o = append(o, kubernetes.WithLivenessProbePeriod(annotateLivenessProbePeriod))
 	}
-	if annotateLivenessProbeThreshold != -1 {
+	if annotateLivenessProbeThreshold != undefined {
 		o = append(o, kubernetes.WithLivenessProbeThreshold(annotateLivenessProbeThreshold))
 	}
-	if annotateReadinessProbeDelay != -1 {
+	if annotateReadinessProbeDelay != undefined {
 		o = append(o, kubernetes.WithReadinessProbeDelay(annotateReadinessProbeDelay))
 	}
-	if annotateReadinessProbeTimeout != -1 {
+	if annotateReadinessProbeTimeout != undefined {
 		o = append(o, kubernetes.WithReadinessProbeTimeout(annotateReadinessProbeTimeout))
 	}
-	if annotateReadinessProbePeriod != -1 {
+	if annotateReadinessProbePeriod != undefined {
 		o = append(o, kubernetes.WithReadinessProbePeriod(annotateReadinessProbePeriod))
 	}
-	if annotateReadinessProbeThreshold != -1 {
+	if annotateReadinessProbeThreshold != undefined {
 		o = append(o, kubernetes.WithReadinessProbeThreshold(annotateReadinessProbeThreshold))
 	}
 	if annotateDaprImage != "" {
@@ -308,13 +310,13 @@ func getOptionsFromFlags() kubernetes.AnnotateOptions {
 	if annotateAppSSL {
 		o = append(o, kubernetes.WithAppSSL())
 	}
-	if annotateMaxRequestBodySize != -1 {
+	if annotateMaxRequestBodySize != undefined {
 		o = append(o, kubernetes.WithMaxRequestBodySize(annotateMaxRequestBodySize))
 	}
 	if annotateHTTPStreamRequestBody {
 		o = append(o, kubernetes.WithHTTPStreamRequestBody())
 	}
-	if annotateGracefulShutdownSeconds != -1 {
+	if annotateGracefulShutdownSeconds != undefined {
 		o = append(o, kubernetes.WithGracefulShutdownSeconds(annotateGracefulShutdownSeconds))
 	}
 	return kubernetes.NewAnnotateOptions(o...)
@@ -324,7 +326,7 @@ func init() {
 	AnnotateCmd.Flags().StringVarP(&annotateTargetResource, "resource", "r", "", "The resource to target to annotate")
 	AnnotateCmd.Flags().StringVarP(&annotateTargetNamespace, "namespace", "n", "", "The namespace the resource target is in (can only be set if --resource is also set)")
 	AnnotateCmd.Flags().StringVarP(&annotateAppID, "app-id", "a", "", "The app id to annotate")
-	AnnotateCmd.Flags().IntVarP(&annotateAppPort, "app-port", "p", -1, "The port to expose the app on")
+	AnnotateCmd.Flags().IntVarP(&annotateAppPort, "app-port", "p", undefined, "The port to expose the app on")
 	AnnotateCmd.Flags().StringVarP(&annotateConfig, "config", "c", "", "The config file to annotate")
 	AnnotateCmd.Flags().StringVar(&annotateAppProtocol, "app-protocol", "", "The protocol to use for the app")
 	AnnotateCmd.Flags().BoolVar(&annotateEnableProfile, "enable-profile", false, "Enable profiling")
@@ -332,9 +334,9 @@ func init() {
 	AnnotateCmd.Flags().StringVar(&annotateAPITokenSecret, "api-token-secret", "", "The secret to use for the API token")
 	AnnotateCmd.Flags().StringVar(&annotateAppTokenSecret, "app-token-secret", "", "The secret to use for the app token")
 	AnnotateCmd.Flags().BoolVar(&annotateLogAsJSON, "log-as-json", false, "Log as JSON")
-	AnnotateCmd.Flags().IntVar(&annotateAppMaxConcurrency, "app-max-concurrency", -1, "The maximum number of concurrent requests to allow")
+	AnnotateCmd.Flags().IntVar(&annotateAppMaxConcurrency, "app-max-concurrency", undefined, "The maximum number of concurrent requests to allow")
 	AnnotateCmd.Flags().BoolVar(&annotateEnableMetrics, "enable-metrics", false, "Enable metrics")
-	AnnotateCmd.Flags().IntVar(&annotateMetricsPort, "metrics-port", -1, "The port to expose the metrics on")
+	AnnotateCmd.Flags().IntVar(&annotateMetricsPort, "metrics-port", undefined, "The port to expose the metrics on")
 	AnnotateCmd.Flags().BoolVar(&annotateEnableDebug, "enable-debug", false, "Enable debug")
 	AnnotateCmd.Flags().StringVar(&annotateEnv, "env", "", "Environment variables to set (key value pairs, comma separated)")
 	AnnotateCmd.Flags().StringVar(&annotateCPULimit, "cpu-limit", "", "The CPU limit to set")
@@ -342,18 +344,18 @@ func init() {
 	AnnotateCmd.Flags().StringVar(&annotateCPURequest, "cpu-request", "", "The CPU request to set")
 	AnnotateCmd.Flags().StringVar(&annotateMemoryRequest, "memory-request", "", "The memory request to set")
 	AnnotateCmd.Flags().StringVar(&annotateListenAddresses, "listen-addresses", "", "The addresses to listen on")
-	AnnotateCmd.Flags().IntVar(&annotateLivenessProbeDelay, "liveness-probe-delay", -1, "The delay to use for the liveness probe")
-	AnnotateCmd.Flags().IntVar(&annotateLivenessProbeTimeout, "liveness-probe-timeout", -1, "The timeout to use for the liveness probe")
-	AnnotateCmd.Flags().IntVar(&annotateLivenessProbePeriod, "liveness-probe-period", -1, "The period to use for the liveness probe")
-	AnnotateCmd.Flags().IntVar(&annotateLivenessProbeThreshold, "liveness-probe-threshold", -1, "The threshold to use for the liveness probe")
-	AnnotateCmd.Flags().IntVar(&annotateReadinessProbeDelay, "readiness-probe-delay", -1, "The delay to use for the readiness probe")
-	AnnotateCmd.Flags().IntVar(&annotateReadinessProbeTimeout, "readiness-probe-timeout", -1, "The timeout to use for the readiness probe")
-	AnnotateCmd.Flags().IntVar(&annotateReadinessProbePeriod, "readiness-probe-period", -1, "The period to use for the readiness probe")
-	AnnotateCmd.Flags().IntVar(&annotateReadinessProbeThreshold, "readiness-probe-threshold", -1, "The threshold to use for the readiness probe")
+	AnnotateCmd.Flags().IntVar(&annotateLivenessProbeDelay, "liveness-probe-delay", undefined, "The delay to use for the liveness probe")
+	AnnotateCmd.Flags().IntVar(&annotateLivenessProbeTimeout, "liveness-probe-timeout", undefined, "The timeout to use for the liveness probe")
+	AnnotateCmd.Flags().IntVar(&annotateLivenessProbePeriod, "liveness-probe-period", undefined, "The period to use for the liveness probe")
+	AnnotateCmd.Flags().IntVar(&annotateLivenessProbeThreshold, "liveness-probe-threshold", undefined, "The threshold to use for the liveness probe")
+	AnnotateCmd.Flags().IntVar(&annotateReadinessProbeDelay, "readiness-probe-delay", undefined, "The delay to use for the readiness probe")
+	AnnotateCmd.Flags().IntVar(&annotateReadinessProbeTimeout, "readiness-probe-timeout", undefined, "The timeout to use for the readiness probe")
+	AnnotateCmd.Flags().IntVar(&annotateReadinessProbePeriod, "readiness-probe-period", undefined, "The period to use for the readiness probe")
+	AnnotateCmd.Flags().IntVar(&annotateReadinessProbeThreshold, "readiness-probe-threshold", undefined, "The threshold to use for the readiness probe")
 	AnnotateCmd.Flags().StringVar(&annotateDaprImage, "dapr-image", "", "The image to use for the dapr sidecar container")
 	AnnotateCmd.Flags().BoolVar(&annotateAppSSL, "app-ssl", false, "Enable SSL for the app")
-	AnnotateCmd.Flags().IntVar(&annotateMaxRequestBodySize, "max-request-body-size", -1, "The maximum request body size to use")
+	AnnotateCmd.Flags().IntVar(&annotateMaxRequestBodySize, "max-request-body-size", undefined, "The maximum request body size to use")
 	AnnotateCmd.Flags().BoolVar(&annotateHTTPStreamRequestBody, "http-stream-request-body", false, "Enable streaming request body for HTTP")
-	AnnotateCmd.Flags().IntVar(&annotateGracefulShutdownSeconds, "graceful-shutdown-seconds", -1, "The number of seconds to wait for the app to shutdown")
+	AnnotateCmd.Flags().IntVar(&annotateGracefulShutdownSeconds, "graceful-shutdown-seconds", undefined, "The number of seconds to wait for the app to shutdown")
 	RootCmd.AddCommand(AnnotateCmd)
 }
